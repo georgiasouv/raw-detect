@@ -8,7 +8,6 @@ model = dict(
     compute_lambda=0.0,
     detector_checkpoint='checkpoints/retinanet_r50_fpn_1x_coco.pth',
     num_eval_classes=3,
-    train_head=True,                          # keep person/bicycle/car at eval
     frontend=dict(type='RAWFrontEnd', in_ch=4, feat=16, num_stages=2, upsample=False),
     detector={{_base_.model}},
     data_preprocessor=dict(
