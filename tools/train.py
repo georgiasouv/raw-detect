@@ -13,7 +13,7 @@ Registration of our custom modules happens two ways (either suffices):
 """
 import argparse
 
-from mmengine.config import Config
+from mmengine.config import Config, DictAction
 from mmengine.runner import Runner
 
 import rawdet  # noqa: F401  -- side effect: registers all custom modules
@@ -23,9 +23,13 @@ def main():
     parser = argparse.ArgumentParser(description="Train via mmengine Runner")
     parser.add_argument("config", help="path to the config file")
     parser.add_argument("--work-dir", default=None, help="override output dir")
+    parser.add_argument("--cfg-options", nargs="+", action=DictAction, default=None,
+                        help="override config entries, e.g. a.b=1 c.d=2")
     args = parser.parse_args()
 
     cfg = Config.fromfile(args.config)
+    if args.cfg_options is not None:
+        cfg.merge_from_dict(args.cfg_options)
     if args.work_dir is not None:
         cfg.work_dir = args.work_dir
 

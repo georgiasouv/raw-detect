@@ -16,6 +16,7 @@ from typing import List, Tuple
 import torch
 import torch.nn as nn
 from mmdet.registry import MODELS
+from .synergy import CoupledGatedStage
 
 
 # ---------------------------------------------------------------------------
@@ -171,7 +172,8 @@ class RAWFrontEnd(nn.Module):
         self.tone = GlobalTone(in_ch)
         self.proj = nn.Conv2d(in_ch, feat, 1)
         self.film_gen = FiLMGenerator(d_s, feat)
-        self.stages = nn.ModuleList([GatedStage(feat) for _ in range(num_stages)])
+        self.stages = nn.ModuleList(
+            [CoupledGatedStage(feat, stats_dim=d_s) for _ in range(num_stages)])
         out_ch = 12 if upsample else 3              # 12 = 3 * (2 * 2) for pixel-shuffle
         self.head = nn.Conv2d(feat, out_ch, 3, padding=1)
         self.ps = nn.PixelShuffle(2) if upsample else nn.Identity()
@@ -183,10 +185,24 @@ class RAWFrontEnd(nn.Module):
         h = film(h, gamma, beta)
         pis: List[torch.Tensor] = []
         for stage in self.stages:
-            h, pi = stage(h)
+            h, pi, _ = stage(h, s)
             pis.append(pi)
         out = torch.sigmoid(self.ps(self.head(h)))              # [B, 3, H, W] in [0, 1]
         return out, pis
+
+    @torch.no_grad()
+    def gate_trace(self, x: torch.Tensor) -> torch.Tensor:
+        """Per-image hard gate decisions [B, num_stages] for the compute meter."""
+        self.eval()
+        s = self.stats(x)
+        h = self.proj(self.tone(x))
+        gamma, beta = self.film_gen(s)
+        h = film(h, gamma, beta)
+        zs = []
+        for stage in self.stages:
+            h, _, z = stage(h, s, gumbel=False)
+            zs.append(z)
+        return torch.stack(zs, dim=1)                            # [B, num_stages]
 
 
 def add_lora(frontend: RAWFrontEnd, r: int = 4, alpha: float = 4.0) -> RAWFrontEnd:
