@@ -3,11 +3,11 @@
 #   ('person','bicycle','car') -> labels 0,1,2 == COCO person/bicycle/car,
 # so GT supervises the right neurons of the frozen 80-class COCO detector.
 # (JSON cat ids are person=1,car=2,bicycle=3; get_cat_ids(cat_names=...) reorders.)
-data_root = 'data/PASCALRAW/'
+data_root = '/scratch/INC1526354/pascalraw/'
 metainfo = dict(classes=('person', 'bicycle', 'car'))
 
 train_pipeline = [
-    dict(type='LoadPackedNPY', npy_dir='data/PASCALRAW/packed'),
+    dict(type='LoadPackedNPY', npy_dir='/scratch/INC1526354/pascalraw/packed'),
     dict(type='LoadAnnotations', with_bbox=True),
     dict(type='RescaleBoxesToPacked'),                 # JSON boxes -> packed grid
     dict(type='Resize', scale=(1333, 800), keep_ratio=True),
@@ -15,7 +15,7 @@ train_pipeline = [
     dict(type='PackDetInputs'),
 ]
 test_pipeline = [
-    dict(type='LoadPackedNPY', npy_dir='data/PASCALRAW/packed'),
+    dict(type='LoadPackedNPY', npy_dir='/scratch/INC1526354/pascalraw/packed'),
     dict(type='LoadAnnotations', with_bbox=True),
     dict(type='Resize', scale=(1333, 800), keep_ratio=True),
     dict(type='SetPackedScaleFactor'),
