@@ -165,15 +165,20 @@ class RAWFrontEnd(nn.Module):
     def __init__(self, in_ch: int = 4, feat: int = 16, num_stages: int = 2,
                  num_bins: int = 16,
                  percentiles: Tuple[float, ...] = (0.01, 0.05, 0.5, 0.95, 0.99),
-                 upsample: bool = True):
+                 upsample: bool = True, couple_gate: bool = True):
         super().__init__()
         self.stats = StatsEncoder(num_bins, percentiles)
         d_s = self.stats.out_dim(in_ch)
         self.tone = GlobalTone(in_ch)
         self.proj = nn.Conv2d(in_ch, feat, 1)
         self.film_gen = FiLMGenerator(d_s, feat)
+        # couple_gate=True: gate sees s(x) (the synergy). False: gate blind to s(x)
+        # (the UNCOUPLED control). stats_dim=0 makes CoupledGatedStage ignore s.
+        gate_stats_dim = d_s if couple_gate else 0
+        self.couple_gate = couple_gate
         self.stages = nn.ModuleList(
-            [CoupledGatedStage(feat, stats_dim=d_s) for _ in range(num_stages)])
+            [CoupledGatedStage(feat, stats_dim=gate_stats_dim)
+             for _ in range(num_stages)])
         out_ch = 12 if upsample else 3              # 12 = 3 * (2 * 2) for pixel-shuffle
         self.head = nn.Conv2d(feat, out_ch, 3, padding=1)
         self.ps = nn.PixelShuffle(2) if upsample else nn.Identity()
@@ -203,6 +208,7 @@ class RAWFrontEnd(nn.Module):
             h, _, z = stage(h, s, gumbel=False)
             zs.append(z)
         return torch.stack(zs, dim=1)                            # [B, num_stages]
+
 
 
 def add_lora(frontend: RAWFrontEnd, r: int = 4, alpha: float = 4.0) -> RAWFrontEnd:
