@@ -32,11 +32,7 @@ class TaskDrivenRAWDetector(BaseDetector):
         super().__init__(data_preprocessor=data_preprocessor, init_cfg=init_cfg)
         self.frontend = MODELS.build(frontend)
         self.detector = MODELS.build(detector)
-        # load COCO weights BEFORE freezing so 'all'/'head' start from real features
-        if detector_checkpoint:
-            from mmengine.runner.checkpoint import load_checkpoint
-            load_checkpoint(self.detector, detector_checkpoint,
-                            map_location='cpu', strict=False)
+        self._detector_checkpoint = detector_checkpoint
         self.compute_lambda = compute_lambda
         self.num_eval_classes = num_eval_classes
         assert freeze_mode in ('all', 'head', 'full'), freeze_mode
@@ -44,6 +40,14 @@ class TaskDrivenRAWDetector(BaseDetector):
         self._apply_freeze()
         self.register_buffer('pixel_mean', torch.tensor(pixel_mean).view(1, 3, 1, 1))
         self.register_buffer('pixel_std', torch.tensor(pixel_std).view(1, 3, 1, 1))
+    
+    def init_weights(self):
+        super().init_weights()
+        if self._detector_checkpoint:
+            from mmengine.runner.checkpoint import load_checkpoint
+            load_checkpoint(self.detector, self._detector_checkpoint,
+                            map_location='cpu', strict=False)
+            self._apply_freeze()
 
     # --- freezing policy -----------------------------------------------------
     def _apply_freeze(self):

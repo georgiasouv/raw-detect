@@ -4,42 +4,98 @@ Image 0  img_id=1
 ============================================================
 GT boxes (0 annotations):
 
-Predictions (0 total before filtering):
+Predictions (4 total before filtering):
+  label=  0  score=0.8812  in_map=True  box=[1682.2281   579.08765 3325.3704  3574.1455 ]
+  label=  0  score=0.0741  in_map=True  box=[2511.5913 1356.2421 3248.7002 2988.6191]
+  label=  0  score=0.0523  in_map=True  box=[1978.5148   423.36426 2898.4043  1936.7253 ]
+  label=  0  score=0.0522  in_map=True  box=[1285.9199 1552.0928 3976.3372 3512.279 ]
 
-_label_to_catid: NOT SET YET
+_label_to_catid: {0: 1, 2: 2, 1: 3}
 
 ============================================================
 Image 1  img_id=2
 ============================================================
 GT boxes (0 annotations):
 
-Predictions (0 total before filtering):
+Predictions (15 total before filtering):
+  label=  0  score=0.8809  in_map=True  box=[1095.7251   207.88254 2277.2822  3573.6426 ]
+  label=  0  score=0.2115  in_map=True  box=[ 210.13026  218.79807 2081.2002  3589.1516 ]
+  label=  0  score=0.1594  in_map=True  box=[3814.2344 1146.5774 5319.033  2596.8826]
+  label=  0  score=0.1529  in_map=True  box=[3550.851    266.51993 5514.6855  2542.5522 ]
+  label=  0  score=0.0922  in_map=True  box=[5711.774  1286.3702 6000.     2247.8625]
+  label=  0  score=0.0767  in_map=True  box=[4266.741  1149.2482 5300.2764 2155.8264]
+  label=  0  score=0.0694  in_map=True  box=[ 559.8349 1134.862  2715.952  3706.538 ]
+  label=  0  score=0.0694  in_map=True  box=[5481.961  2011.0106 5988.1772 2823.008 ]
+  label=  0  score=0.0687  in_map=True  box=[4232.8135 1616.2599 5382.5093 2602.8423]
+  label=  0  score=0.0670  in_map=True  box=[4014.2559  684.1595 5347.9653 2039.0952]
+  label=  1  score=0.0628  in_map=True  box=[5085.9414  196.6102 5548.5225  684.3763]
+  label=  0  score=0.0624  in_map=True  box=[4288.426  1064.0038 5829.373  2747.0432]
+  label=  0  score=0.0600  in_map=True  box=[5591.0693 1363.0244 6000.     2764.7168]
+  label=  0  score=0.0590  in_map=True  box=[3141.1672 1473.3044 5449.7266 2733.1653]
+  label=  0  score=0.0586  in_map=True  box=[4240.7173 1699.8281 4558.6387 2188.3093]
 
-_label_to_catid: NOT SET YET
+_label_to_catid: {0: 1, 2: 2, 1: 3}
 
 ============================================================
 Image 2  img_id=3
 ============================================================
 GT boxes (0 annotations):
 
-Predictions (0 total before filtering):
+Predictions (8 total before filtering):
+  label=  0  score=0.9445  in_map=True  box=[1180.4974 1082.5815 2252.1519 3372.4346]
+  label=  0  score=0.9203  in_map=True  box=[2097.011  1245.8418 2924.8918 3276.362 ]
+  label=  0  score=0.5253  in_map=True  box=[1547.9155 1146.722  2717.3354 3312.688 ]
+  label=  0  score=0.0792  in_map=True  box=[1067.321   655.9608 2925.6057 3233.6572]
+  label=  0  score=0.0659  in_map=True  box=[ 973.5687 1572.1044 3691.2925 3371.6475]
+  label=  0  score=0.0607  in_map=True  box=[1324.631  1056.0099 2106.3186 2651.749 ]
+  label=  0  score=0.0600  in_map=True  box=[2099.5654 1302.064  2794.972  2352.0193]
+  label=  0  score=0.0503  in_map=True  box=[1283.2235 2035.5956 2380.4067 3350.691 ]
 
-_label_to_catid: NOT SET YET
+_label_to_catid: {0: 1, 2: 2, 1: 3}
 
 ============================================================
 Image 3  img_id=4
 ============================================================
 GT boxes (0 annotations):
 
-Predictions (0 total before filtering):
+Predictions (18 total before filtering):
+  label=  0  score=0.8616  in_map=True  box=[1488.7653   979.08966 2440.2312  3820.4355 ]
+  label=  0  score=0.5320  in_map=True  box=[4813.469   931.9708 5891.471  3583.0496]
+  label=  0  score=0.3326  in_map=True  box=[1441.8845 1053.2017 3353.9192 3910.631 ]
+  label=  0  score=0.1684  in_map=True  box=[1128.7577 1363.7993 5381.1455 3727.9854]
+  label=  0  score=0.1491  in_map=True  box=[ 677.6618 1199.8431 2417.3906 3887.0728]
+  label=  0  score=0.1320  in_map=True  box=[4335.7256 1527.702  5727.7207 3412.79  ]
+  label=  0  score=0.1318  in_map=True  box=[1901.9354 2161.51   4189.601  3934.7905]
+  label=  0  score=0.0990  in_map=True  box=[5041.5327  910.4467 5634.6885 2834.9727]
+  label=  0  score=0.0945  in_map=True  box=[5042.7183 1497.0969 5734.435  3430.5515]
+  label=  1  score=0.0877  in_map=True  box=[ 659.6121    28.01073 1095.6998   514.0342 ]
+  label=  0  score=0.0774  in_map=True  box=[2866.0369 1585.6426 5745.7925 3516.418 ]
+  label=  2  score=0.0746  in_map=True  box=[ 660.6458     29.332275 1113.708     512.81055 ]
+  label=  0  score=0.0735  in_map=True  box=[4651.286  1191.9473 5593.1978 2598.7783]
+  label=  0  score=0.0728  in_map=True  box=[1881.8046 3106.6836 3861.6445 3955.9585]
+  label=  0  score=0.0724  in_map=True  box=[5298.5503  961.6092 5568.441  1407.8193]
+  label=  0  score=0.0655  in_map=True  box=[5251.0557  949.3557 5619.495  1659.7235]
+  label=  0  score=0.0644  in_map=True  box=[681.4535   20.98133 932.8821  443.23608]
+  label=  0  score=0.0639  in_map=True  box=[1488.4818 1277.741  2396.6714 2668.2534]
 
-_label_to_catid: NOT SET YET
+_label_to_catid: {0: 1, 2: 2, 1: 3}
 
 ============================================================
 Image 4  img_id=5
 ============================================================
 GT boxes (0 annotations):
 
-Predictions (0 total before filtering):
+Predictions (11 total before filtering):
+  label=  2  score=0.8971  in_map=True  box=[2250.6438 1334.6011 5667.865  2534.1648]
+  label=  2  score=0.1807  in_map=True  box=[3981.059  1596.6179 5675.006  2545.9954]
+  label=  2  score=0.1615  in_map=True  box=[1075.9426 1329.6178 5818.9014 3417.6929]
+  label=  0  score=0.1276  in_map=True  box=[3420.9214 1440.6128 3719.745  1705.6134]
+  label=  2  score=0.0869  in_map=True  box=[1595.9652 2105.3762 5734.2812 3703.9941]
+  label=  0  score=0.0700  in_map=True  box=[3553.4087 1447.0369 3772.6926 1690.3276]
+  label=  2  score=0.0695  in_map=True  box=[1454.7241   589.43085 5872.2617  2608.3735 ]
+  label=  2  score=0.0634  in_map=True  box=[3263.9226 1251.157  5629.188  2176.925 ]
+  label=  0  score=0.0591  in_map=True  box=[3451.8972 1472.2949 3633.5317 1684.6201]
+  label=  2  score=0.0567  in_map=True  box=[2233.4895 1589.7338 4193.187  2465.079 ]
+  label=  2  score=0.0529  in_map=True  box=[2211.1746 1254.0089 4266.5015 2193.896 ]
 
-_label_to_catid: NOT SET YET
+_label_to_catid: {0: 1, 2: 2, 1: 3}
