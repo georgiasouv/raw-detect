@@ -6,7 +6,7 @@
 #SBATCH --error=/networkhome/WMGDS/souval_g/raw-detect/cluster_scripts/logs/Syn03_%j.err
 
 # ============================================================
-#  Syn03  =  freezing study, variant 'full'  (configs/methods/variant_full.py)
+#  Syn03  =  freezing study, variant 'full'  (configs/methods/real_Syn03_full.py)
 # ============================================================
 
 # -- Environment --------------------------------------------------
@@ -45,7 +45,7 @@ echo "=== Starting Syn03 (variant_full) ==="
 cd /networkhome/WMGDS/souval_g/raw-detect
 export PYTHONPATH="$(pwd):${PYTHONPATH}"
 
-mim train mmdet configs/methods/variant_full.py \
+mim train mmdet configs/methods/real_Syn03_full.py \
     --launcher none \
     --work-dir /networkhome/WMGDS/souval_g/raw-detect/work_dirs/Syn03_full \
     --cfg-options \

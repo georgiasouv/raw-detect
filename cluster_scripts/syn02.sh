@@ -6,7 +6,7 @@
 #SBATCH --error=/networkhome/WMGDS/souval_g/raw-detect/cluster_scripts/logs/Syn02_%j.err
 
 # ============================================================
-#  Syn02  =  freezing study, variant 'head'  (configs/methods/variant_head.py)
+#  Syn02  =  freezing study, variant 'head'  (configs/methods/real_Syn02_head.py)
 # ============================================================
 
 # -- Environment --------------------------------------------------
@@ -45,7 +45,7 @@ echo "=== Starting Syn02 (variant_head) ==="
 cd /networkhome/WMGDS/souval_g/raw-detect
 export PYTHONPATH="$(pwd):${PYTHONPATH}"
 
-mim train mmdet configs/methods/variant_head.py \
+mim train mmdet configs/methods/real_Syn02_head.py \
     --launcher none \
     --work-dir /networkhome/WMGDS/souval_g/raw-detect/work_dirs/Syn02_head \
     --cfg-options \

@@ -6,7 +6,7 @@
 #SBATCH --error=/networkhome/WMGDS/souval_g/raw-detect/cluster_scripts/logs/Syn01_%j.err
 
 # ============================================================
-#  Syn01  =  freezing study, variant 'frozen'  (configs/methods/variant_frozen.py)
+#  Syn01  =  freezing study, variant 'frozen'  (configs/methods/real_Syn01_frozen.py)
 # ============================================================
 
 # -- Environment --------------------------------------------------
@@ -45,7 +45,7 @@ echo "=== Starting Syn01 (variant_frozen) ==="
 cd /networkhome/WMGDS/souval_g/raw-detect
 export PYTHONPATH="$(pwd):${PYTHONPATH}"
 
-mim train mmdet configs/methods/variant_frozen.py \
+mim train mmdet configs/methods/real_Syn01_frozen.py \
     --launcher none \
     --work-dir /networkhome/WMGDS/souval_g/raw-detect/work_dirs/Syn01_frozen \
     --cfg-options \
