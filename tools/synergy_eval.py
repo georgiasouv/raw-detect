@@ -121,15 +121,20 @@ def main():
     cfg.visualizer = dict(type='DetLocalVisualizer',
                           vis_backends=[dict(type='LocalVisBackend')],
                           name='visualizer')
-    cfg.custom_hooks = []                            # no early-stop etc. for eval
+    cfg.custom_hooks = []
+    # 1-CPU node: 2 workers can deadlock -> force main-process loading
+    for dl in ('train_dataloader', 'val_dataloader'):
+        if dl in cfg:
+            cfg[dl]['num_workers'] = 0
+            cfg[dl]['persistent_workers'] = False                            # no early-stop etc. for eval
 
     runner = Runner.from_cfg(cfg)
     model = runner.model
     load_checkpoint(model, args.checkpoint, map_location='cpu', strict=False)
-    model.eval().to(runner.device)
+    device = next(model.parameters()).device; model.eval().to(device)
     frontend = model.frontend
 
-    device = runner.device
+    # device set above from model params
     res = run_analysis(
         frontend,
         _inputs_iter(runner.train_dataloader, model),

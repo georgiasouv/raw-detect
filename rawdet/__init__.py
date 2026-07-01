@@ -18,3 +18,4 @@ from . import taxonomy       # noqa: F401  class mapping / evaluable set
 from . import compute_meter  # noqa: F401  executed-FLOPs meter
 from . import transforms       # noqa: F401
 from . import detector       # noqa: F401  TaskDrivenRAWDetector, LoadPackedRAW (registers)
+from . import compute_warmup  # noqa

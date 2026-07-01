@@ -75,19 +75,28 @@ class SetPackedScaleFactor(BaseTransform):
 
 @TRANSFORMS.register_module()
 class LoadPackedNPY(BaseTransform):
-    """Load a PRE-PACKED .npy (float16 [4, H/2, W/2]) from tools/prep_dataset.py
-    instead of decoding the .nef at train time. A missing .npy returns None."""
+    """Load a PRE-PACKED .npy ([4, H/2, W/2], raw integer counts) from
+    tools/prep_dataset.py instead of decoding at train time. Applies
+    per-dataset affine normalization: clip outliers to `white`, subtract
+    `black`, divide by (white - black) -> float32 in [0, 1].
+    A missing .npy returns None."""
 
-    def __init__(self, npy_dir):
+    def __init__(self, npy_dir, black=0.0, white=None):
         self.npy_dir = npy_dir
+        self.black = float(black)
+        self.white = white  # required; per-dataset robust white level
 
     def transform(self, results: dict):
         import os
+        if self.white is None:
+            raise ValueError('LoadPackedNPY: `white` must be set per dataset.')
         stem = os.path.splitext(os.path.basename(results['img_path']))[0]
         npy = os.path.join(self.npy_dir, stem + '.npy')
         if not os.path.exists(npy):
             return None
         packed = np.load(npy).astype(np.float32)
+        packed = np.clip(packed, self.black, self.white)
+        packed = (packed - self.black) / (self.white - self.black)
         img = np.ascontiguousarray(packed.transpose(1, 2, 0))
         ph, pw = img.shape[:2]
         jw = int(results.get('width') or pw * 2)
