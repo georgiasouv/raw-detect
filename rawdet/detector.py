@@ -40,7 +40,7 @@ class TaskDrivenRAWDetector(BaseDetector):
         self._apply_freeze()
         self.register_buffer('pixel_mean', torch.tensor(pixel_mean).view(1, 3, 1, 1))
         self.register_buffer('pixel_std', torch.tensor(pixel_std).view(1, 3, 1, 1))
-    
+
     def init_weights(self):
         super().init_weights()
         if self._detector_checkpoint:
@@ -81,8 +81,48 @@ class TaskDrivenRAWDetector(BaseDetector):
         x = (rgb01 * 255.0 - self.pixel_mean) / self.pixel_std
         return x, pis
 
+    def _sync_geometry(self, raw, processed, batch_data_samples, training):
+        """Re-sync sample geometry to the tensor the inner detector receives.
+
+        The front-end may change resolution INSIDE forward() (pixel-shuffle
+        upsample), after the data pipeline has already recorded img_shape /
+        scale_factor. mmdet's coordinate contract assumes those keys describe
+        the detector's actual input, so every geometry key -- and, at train
+        time, the GT boxes -- must be lifted into the front-end's output space.
+
+        Factors are MEASURED from the tensors (never hardcoded), so this is an
+        exact no-op when the front-end preserves resolution (upsample=False)
+        and self-adapts if the upsample factor ever changes.
+        """
+        fx = processed.shape[-1] / raw.shape[-1]
+        fy = processed.shape[-2] / raw.shape[-2]
+        if fx == 1.0 and fy == 1.0:
+            return
+        for ds in batch_data_samples:
+            h, w = ds.metainfo['img_shape']
+            meta = {'img_shape': (round(h * fy), round(w * fx))}
+            for key in ('batch_input_shape', 'pad_shape'):
+                if key in ds.metainfo:
+                    kh, kw = ds.metainfo[key][:2]
+                    meta[key] = (round(kh * fy), round(kw * fx))
+            if 'scale_factor' in ds.metainfo:
+                sx, sy = ds.metainfo['scale_factor']
+                meta['scale_factor'] = (sx * fx, sy * fy)
+            ds.set_metainfo(meta)
+            if training:
+                for field in ('gt_instances', 'ignored_instances'):
+                    inst = getattr(ds, field, None)
+                    if inst is None or 'bboxes' not in inst:
+                        continue
+                    if hasattr(inst.bboxes, 'rescale_'):
+                        inst.bboxes.rescale_([fx, fy])   # HorizontalBoxes API
+                    else:
+                        inst.bboxes[:, 0::2] *= fx       # raw [N,4] xyxy tensor
+                        inst.bboxes[:, 1::2] *= fy
+
     def loss(self, batch_inputs, batch_data_samples):
         x, pis = self._frontend_to_input(batch_inputs)
+        self._sync_geometry(batch_inputs, x, batch_data_samples, training=True)
         losses = self.detector.loss(x, batch_data_samples)
         compute = sum(stage.cost * pi for stage, pi in zip(self.frontend.stages, pis))
         losses['loss_compute'] = self.compute_lambda * compute
@@ -90,6 +130,7 @@ class TaskDrivenRAWDetector(BaseDetector):
 
     def predict(self, batch_inputs, batch_data_samples, rescale=True):
         x, _ = self._frontend_to_input(batch_inputs)
+        self._sync_geometry(batch_inputs, x, batch_data_samples, training=False)
         results = self.detector.predict(x, batch_data_samples, rescale=rescale)
         if self.num_eval_classes is not None:
             for ds in results:
